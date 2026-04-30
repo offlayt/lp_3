@@ -1,0 +1,58 @@
+<Window x:Class="MosaicMaterialsApp.Wpf.MaterialSuppliersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Поставщики материала"
+        Height="600"
+        Width="900"
+        WindowStartupLocation="CenterOwner"
+        Icon="pack://siteoforigin:,,,/res/Mosaic.ico">
+    <DockPanel LastChildFill="True">
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource SecondaryBackgroundBrush}"
+                Padding="16,14">
+            <StackPanel>
+                <TextBlock FontSize="25"
+                           FontWeight="Bold"
+                           Text="Список поставщиков" />
+                <TextBlock x:Name="MaterialNameTextBlock"
+                           Margin="0,6,0,0"
+                           FontSize="16" />
+            </StackPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom"
+                BorderThickness="1,1,1,0"
+                BorderBrush="{StaticResource BorderBrush}"
+                Padding="8,8,8,10">
+            <Button x:Name="BackButton"
+                    Width="120"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Click="BackButton_Click"
+                    Content="Назад" />
+        </Border>
+
+        <DataGrid x:Name="SuppliersDataGrid"
+                  Margin="10"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Поставщик"
+                                    Binding="{Binding Name}"
+                                    Width="*" />
+                <DataGridTextColumn Header="Рейтинг"
+                                    Binding="{Binding Rating}"
+                                    Width="120" />
+                <DataGridTextColumn Header="Дата начала работы"
+                                    Binding="{Binding StartDateText}"
+                                    Width="220" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

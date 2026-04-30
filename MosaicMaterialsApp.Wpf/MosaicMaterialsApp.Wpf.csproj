@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>..\Прил_В1_КОД 09.02.07-2-2025-ПУ\Ресурсы\Мозаика.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper.Excel.Core" Version="27.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Прил_В1_КОД 09.02.07-2-2025-ПУ\Ресурсы\Мозаика.ico">
+      <Link>res\Mosaic.ico</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Прил_В1_КОД 09.02.07-2-2025-ПУ\Ресурсы\Мозаика.png">
+      <Link>res\MosaicLogo.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Прил_В1_КОД 09.02.07-2-2025-ПУ\Ресурсы\Material_suppliers_import.xlsx">
+      <Link>res\Material_suppliers_import.xlsx</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Прил_В1_КОД 09.02.07-2-2025-ПУ\Ресурсы\Material_type_import.xlsx">
+      <Link>res\Material_type_import.xlsx</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Прил_В1_КОД 09.02.07-2-2025-ПУ\Ресурсы\Materials_import.xlsx">
+      <Link>res\Materials_import.xlsx</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Прил_В1_КОД 09.02.07-2-2025-ПУ\Ресурсы\Product_type_import.xlsx">
+      <Link>res\Product_type_import.xlsx</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Прил_В1_КОД 09.02.07-2-2025-ПУ\Ресурсы\Suppliers_import.xlsx">
+      <Link>res\Suppliers_import.xlsx</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
