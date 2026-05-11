@@ -1,8 +1,9 @@
-﻿using System.Windows;
+﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Input;
+using MosaicMaterialsApp.Wpf.src;
 using ProductType = MosaicMaterialsApp.Wpf.src.AppDataContext.ProductType;
 using MaterialType = MosaicMaterialsApp.Wpf.src.AppDataContext.MaterialType;
-using MosaicMaterialsApp.Wpf.src;
 
 namespace MosaicMaterialsApp.Wpf;
 
@@ -74,13 +75,7 @@ public partial class MainWindow : Window
     private void OpenMaterialEditor(int? materialId)
     {
         var window = new MaterialEditWindow(materialId) { Owner = this };
-
-        if (window.ShowDialog() == true)
-        {
-            LoadMaterials();
-            return;
-        }
-
+        window.ShowDialog();
         LoadMaterials();
     }
 
@@ -97,12 +92,7 @@ public partial class MainWindow : Window
 
     private bool TryParsePositiveDouble(string value, string warningMessage, out double result)
     {
-        if (double.TryParse(value.Trim(), NumberStyles.Any, RuCulture, out result) && result > 0)
-        {
-            return true;
-        }
-
-        if (double.TryParse(value.Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out result) && result > 0)
+        if (LoadXlsx.TryParseDouble(value, out result) && result > 0)
         {
             return true;
         }
@@ -169,18 +159,6 @@ public partial class MainWindow : Window
         OpenMaterialEditor(materialId: null);
     }
 
-    private void EditMaterialButton_Click(object sender, RoutedEventArgs e)
-    {
-        var material = GetSelectedMaterial("Выберите материал для редактирования.");
-
-        if (material is null)
-        {
-            return;
-        }
-
-        OpenMaterialEditor(material.Id);
-    }
-
     private void SuppliersButton_Click(object sender, RoutedEventArgs e)
     {
         var material = GetSelectedMaterial("Выберите материал, чтобы открыть список поставщиков.");
@@ -194,11 +172,6 @@ public partial class MainWindow : Window
         window.ShowDialog();
     }
 
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
-    {
-        Close();
-    }
-
     private void CalculateButton_Click(object sender, RoutedEventArgs e)
     {
         CalculateProductQuantity();
@@ -206,7 +179,7 @@ public partial class MainWindow : Window
 
     private void MaterialsListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        var material = GetSelectedMaterial();
+        var material = MaterialsListBox.SelectedItem as MaterialListItem;
 
         if (material is null)
         {

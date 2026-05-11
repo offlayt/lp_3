@@ -4,7 +4,8 @@ namespace MosaicMaterialsApp.Wpf.src;
 
 public class AppDataContext : DbContext
 {
-    private static readonly string ArtifactsFolder = Path.Combine(AppContext.BaseDirectory, "artifacts");
+    private const string SolutionFileName = "MosaicMaterialsApp.Wpf.sln";
+    private static readonly string ArtifactsFolder = ResolveArtifactsFolder();
 
     public DbSet<MaterialType> MaterialTypes => Set<MaterialType>();
     public DbSet<Material> Materials => Set<Material>();
@@ -44,37 +45,23 @@ public class AppDataContext : DbContext
 
     public void EnsureCreatedAndSeed()
     {
-        Directory.CreateDirectory(ArtifactsFolder);
+        Database.EnsureCreated();
 
-        try
+        if (IsDatabaseEmpty())
         {
-            Database.EnsureCreated();
-
-            var hasAnyData = Materials.Any() || Suppliers.Any() || MaterialTypes.Any() || ProductTypes.Any() || MaterialSuppliers.Any();
-            var hasFullData = Materials.Any() && Suppliers.Any() && MaterialTypes.Any() && ProductTypes.Any() && MaterialSuppliers.Any();
-
-            if (hasFullData)
-            {
-                GenerateScript();
-                return;
-            }
-
-            if (hasAnyData)
-            {
-                Database.EnsureDeleted();
-                Database.EnsureCreated();
-            }
-
             Seed();
-            GenerateScript();
         }
-        catch
-        {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
-            Seed();
-            GenerateScript();
-        }
+
+        GenerateScript();
+    }
+
+    private bool IsDatabaseEmpty()
+    {
+        return !MaterialTypes.Any()
+            && !ProductTypes.Any()
+            && !Materials.Any()
+            && !Suppliers.Any()
+            && !MaterialSuppliers.Any();
     }
 
     private void Seed()
@@ -159,9 +146,29 @@ public class AppDataContext : DbContext
 
     private void GenerateScript()
     {
+        Directory.CreateDirectory(ArtifactsFolder);
         var scriptPath = Path.Combine(ArtifactsFolder, "database_script.sql");
         var script = Database.GenerateCreateScript();
         File.WriteAllText(scriptPath, script);
+    }
+
+    private static string ResolveArtifactsFolder()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+
+        while (directory is not null)
+        {
+            var solutionPath = Path.Combine(directory.FullName, SolutionFileName);
+
+            if (File.Exists(solutionPath))
+            {
+                return Path.Combine(directory.FullName, "artifacts");
+            }
+
+            directory = directory.Parent;
+        }
+
+        return Path.Combine(AppContext.BaseDirectory, "artifacts");
     }
 
     public class MaterialType

@@ -44,21 +44,11 @@
                         Style="{StaticResource AccentButtonStyle}"
                         Click="AddMaterialButton_Click"
                         Content="Добавить" />
-                <Button x:Name="EditMaterialButton"
-                        Width="170"
-                        Style="{StaticResource AccentButtonStyle}"
-                        Click="EditMaterialButton_Click"
-                        Content="Редактировать" />
                 <Button x:Name="SuppliersButton"
                         Width="220"
                         Style="{StaticResource AccentButtonStyle}"
                         Click="SuppliersButton_Click"
                         Content="Поставщики материала" />
-                <Button x:Name="CloseButton"
-                        Width="110"
-                        Style="{StaticResource AccentButtonStyle}"
-                        Click="CloseButton_Click"
-                        Content="Выйти" />
             </WrapPanel>
         </Border>
 

@@ -85,14 +85,15 @@ public partial class MaterialEditWindow : Window
         return decimal.Round(value, 2, MidpointRounding.AwayFromZero) != value;
     }
 
-    private bool TryParseDecimal(string source, out decimal value)
+    private bool TryReadDecimal(string text, string warningMessage, Func<decimal, bool> isValid, out decimal value)
     {
-        if (decimal.TryParse(source.Trim(), NumberStyles.Any, RuCulture, out value))
+        if (LoadXlsx.TryParseDecimal(text, out value) && isValid(value))
         {
             return true;
         }
 
-        return decimal.TryParse(source.Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
+        ShowMessage(warningMessage, "Предупреждение", MessageBoxImage.Warning);
+        return false;
     }
 
     private bool ValidateInput(
@@ -128,27 +129,39 @@ public partial class MaterialEditWindow : Window
             return false;
         }
 
-        if (!TryParseDecimal(StockQuantityTextBox.Text, out stockQuantity) || stockQuantity < 0)
+        if (!TryReadDecimal(
+                StockQuantityTextBox.Text,
+                "Количество на складе должно быть числом не меньше 0.",
+                value => value >= 0,
+                out stockQuantity))
         {
-            ShowMessage("Количество на складе должно быть числом не меньше 0.", "Предупреждение", MessageBoxImage.Warning);
             return false;
         }
 
-        if (!TryParseDecimal(PackQuantityTextBox.Text, out packQuantity) || packQuantity <= 0)
+        if (!TryReadDecimal(
+                PackQuantityTextBox.Text,
+                "Количество в упаковке должно быть числом больше 0.",
+                value => value > 0,
+                out packQuantity))
         {
-            ShowMessage("Количество в упаковке должно быть числом больше 0.", "Предупреждение", MessageBoxImage.Warning);
             return false;
         }
 
-        if (!TryParseDecimal(MinQuantityTextBox.Text, out minQuantity) || minQuantity < 0)
+        if (!TryReadDecimal(
+                MinQuantityTextBox.Text,
+                "Минимальное количество должно быть числом не меньше 0.",
+                value => value >= 0,
+                out minQuantity))
         {
-            ShowMessage("Минимальное количество должно быть числом не меньше 0.", "Предупреждение", MessageBoxImage.Warning);
             return false;
         }
 
-        if (!TryParseDecimal(UnitPriceTextBox.Text, out unitPrice) || unitPrice < 0)
+        if (!TryReadDecimal(
+                UnitPriceTextBox.Text,
+                "Цена должна быть числом не меньше 0.",
+                value => value >= 0,
+                out unitPrice))
         {
-            ShowMessage("Цена должна быть числом не меньше 0.", "Предупреждение", MessageBoxImage.Warning);
             return false;
         }
 

@@ -14,7 +14,7 @@ public static class AppData
     {
         using var db = new AppDataContext();
 
-        return db.Materials
+        var materials = db.Materials
             .AsNoTracking()
             .Select(item => new MaterialListItem
             {
@@ -28,17 +28,18 @@ public static class AppData
                 Unit = item.Unit
             })
             .OrderBy(item => item.Name)
-            .ToList()
-            .Select(item =>
-            {
-                item.MinimalPurchaseCost = MaterialCalculator.CalculateMinimalPurchaseCost(
-                    item.StockQuantity,
-                    item.MinQuantity,
-                    item.PackQuantity,
-                    item.UnitPrice);
-                return item;
-            })
             .ToList();
+
+        foreach (var material in materials)
+        {
+            material.MinimalPurchaseCost = MaterialCalculator.CalculateMinimalPurchaseCost(
+                material.StockQuantity,
+                material.MinQuantity,
+                material.PackQuantity,
+                material.UnitPrice);
+        }
+
+        return materials;
     }
 
     public static List<AppDataContext.MaterialType> GetMaterialTypes()

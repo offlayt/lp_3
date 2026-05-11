@@ -7,6 +7,7 @@ namespace MosaicMaterialsApp.Wpf.src;
 public static class LoadXlsx
 {
     private static readonly CultureInfo RuCulture = CultureInfo.GetCultureInfo("ru-RU");
+    private static readonly CultureInfo InvariantCulture = CultureInfo.InvariantCulture;
 
     private static string ResolveResourcePath(string relativePath)
     {
@@ -26,14 +27,16 @@ public static class LoadXlsx
         return csv.GetRecords<T>().ToList();
     }
 
+    public static bool TryParseDecimal(string value, out decimal result)
+    {
+        var text = value.Trim();
+        return decimal.TryParse(text, NumberStyles.Any, RuCulture, out result)
+            || decimal.TryParse(text, NumberStyles.Any, InvariantCulture, out result);
+    }
+
     public static decimal ParseDecimal(string value)
     {
-        if (decimal.TryParse(value.Trim(), NumberStyles.Any, RuCulture, out var result))
-        {
-            return result;
-        }
-
-        if (decimal.TryParse(value.Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+        if (TryParseDecimal(value, out var result))
         {
             return result;
         }
@@ -41,14 +44,16 @@ public static class LoadXlsx
         throw new FormatException($"Не удалось преобразовать значение '{value}' в число.");
     }
 
+    public static bool TryParseDouble(string value, out double result)
+    {
+        var text = value.Trim();
+        return double.TryParse(text, NumberStyles.Any, RuCulture, out result)
+            || double.TryParse(text, NumberStyles.Any, InvariantCulture, out result);
+    }
+
     public static double ParseDouble(string value)
     {
-        if (double.TryParse(value.Trim(), NumberStyles.Any, RuCulture, out var result))
-        {
-            return result;
-        }
-
-        if (double.TryParse(value.Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out result))
+        if (TryParseDouble(value, out var result))
         {
             return result;
         }
@@ -59,31 +64,27 @@ public static class LoadXlsx
     public static double ParsePercent(string value)
     {
         var text = value.Trim();
-        var hasPercent = text.EndsWith("%", StringComparison.Ordinal);
 
-        if (hasPercent)
+        if (text.EndsWith("%", StringComparison.Ordinal))
         {
             text = text[..^1].Trim();
+            return ParseDouble(text) / 100d;
         }
 
-        var number = ParseDouble(text);
-        return hasPercent ? number / 100d : number;
+        return ParseDouble(text);
     }
 
     public static DateTime ParseDate(string value)
     {
-        if (DateTime.TryParse(value.Trim(), RuCulture, DateTimeStyles.None, out var result))
+        var text = value.Trim();
+
+        if (DateTime.TryParse(text, RuCulture, DateTimeStyles.None, out var result)
+            || DateTime.TryParse(text, InvariantCulture, DateTimeStyles.None, out result))
         {
             return result;
         }
 
-        if (DateTime.TryParse(value.Trim(), CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
-        {
-            return result;
-        }
-
-        var numeric = ParseDouble(value);
-        return DateTime.FromOADate(numeric);
+        return DateTime.FromOADate(ParseDouble(value));
     }
 
     public class MaterialTypeImport
